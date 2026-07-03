@@ -1,0 +1,7 @@
+# Core pipeline
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+
+# Real model runs only (offline mock needs none of this)
+anthropic>=0.40

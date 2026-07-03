@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Run artifacts (resumable cache; not a result)
+cache.json
+**/cache.json
+results/_mock/
+results/_pilot/
+
+# OS / editor
+.DS_Store
+~$*

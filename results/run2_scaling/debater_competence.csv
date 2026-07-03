@@ -1,0 +1,7 @@
+flaw_type,report_finds_flaw_rate,n
+fabricated_observation,1.0,80
+obfuscated_flaw,1.0,80
+planning_error,1.0,80
+reward_hack,1.0,80
+state_tracking_slip,1.0,80
+unsafe_action,1.0,80
