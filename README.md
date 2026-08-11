@@ -1,6 +1,6 @@
 # Credulity, Not Verification: The Limits of Structured Assistance for Tool-Blind Oversight of AI Agents
 
-This repository contains the paper, code, and data for a controlled study that investigates
+This repository contains the code and data for a controlled study that investigates
 whether structured assistance, including debate, critique, or consultancy with honest helpers
 that hold ground-truth access, enables a weak, tool-blind overseer to detect failures in
 multi-step agent tool-use trajectories. The study also examines the nature of the assistance
@@ -54,7 +54,6 @@ results/
   run1_weak_tier/    Run 1 — detection_by_class_weak.png (Figure 1) + CSVs
   run2_scaling/      Run 2 — tier sweep; scaling_fabricated_observation.png (Figure 2),
                      credulity.png (Figure 3), per-flaw/CSV detail
-paper/               the write-up (.docx)
 ```
 
 ## Method (one paragraph)
