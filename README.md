@@ -19,8 +19,9 @@ evidence of error exists in the environment, which the overseer is unable to que
 2. Apparent amplification is observed: assistance from honest helpers restores a weak
    overseer to approximately 1.00, reproducing the familiar amplification result. However,
    the benefit diminishes as the overseer's capability increases. Critique performance
-   declines from 1.00 to 0.86 to 0.11 (debate corroborates these findings; its results
-   represent a lower bound — see the paper §4.3).
+   declines from 1.00 to 0.86 to 0.11. Consultancy and debate collapse a tier earlier:
+   consultancy falls from 1.00 to 0.00 at the mid tier (0.00 at strong), and debate falls
+   from 0.99 to 0.03 (its results represent a lower bound — see the paper section 4.3).
 3. The results indicate that credulity, rather than verification, is the primary mechanism.
    A lying-helper ablation provides the overseer with a critique that incorrectly asserts a
    clean trajectory is flawed. The weak overseer subsequently identifies 100% of clean
@@ -31,7 +32,7 @@ evidence of error exists in the environment, which the overseer is unable to que
    strong overseer an equally strong helper leaves detection near the floor (0.18, versus the
    approximately 0.86 that capability parity predicts from the study's own grid), while a
    stronger lying helper raises the false-positive rate from 0.20 to 0.35. Greater helper
-   capability buys persuasion, not verification (see the paper §4.5).
+   capability buys persuasion, not verification (see the paper section 4.5).
 
 When the overseer cannot verify the transmitted evidence, amplification and gullibility
 become the same phenomenon. Honest assistance cannot address a structural verification gap;
@@ -49,10 +50,11 @@ src/                 experiment harness (Python)
   eval.py run_experiment.py                 metrics (bootstrap CIs) + figures + CLI orchestrator
   ablation_lying_helper.py                  the credulity control (prints Figure 3's numbers)
   control_helper_tier.py                    the matched-helper control (prints §4.5's numbers)
+  plot_scaling_figure.py                    Figure 2 (scaling_fabricated_observation.png) from run2_scaling/detection.csv
 data/                dataset.jsonl (560 labeled trajectories) + dataset.meta.json (env params)
 results/
   run1_weak_tier/    Run 1 — detection_by_class_weak.png (Figure 1) + CSVs
-  run2_scaling/      Run 2 — tier sweep; scaling_fabricated_observation.png (Figure 2),
+  run2_scaling/      Run 2 — tier sweep, all four protocols; scaling_fabricated_observation.png (Figure 2),
                      credulity.png (Figure 3), per-flaw/CSV detail
 ```
 
@@ -66,7 +68,7 @@ flaw per task). The overseer is presented with the task, a policy, and the traje
 claimed observations, but never the gold answer or the verifier report. Helpers hold the
 ground truth. The study compares judge-alone, consultancy, critique, and debate across three
 overseer capability tiers, with helpers fixed at the mid tier. A matched-helper control
-(paper §4.5) reruns the critique protocol at the strong tier with a strong helper on the
+(paper section 4.5) reruns the critique protocol at the strong tier with a strong helper on the
 fabricated-observation and clean subsets (n = 80 each).
 
 ## Reproduce
@@ -90,9 +92,10 @@ python run_experiment.py --real --protocols judge_alone,consultancy,critique,deb
     --judge-levels weak --n 560 --workers 12 \
     --dataset ../data/dataset.jsonl --meta ../data/dataset.meta.json --out ../results/run1_weak_tier
 # Run 2 (Figures 2–3): tier sweep
-python run_experiment.py --real --protocols judge_alone,critique,debate \
+python run_experiment.py --real --protocols judge_alone,consultancy,critique,debate \
     --judge-levels weak,mid,strong --n 560 --workers 12 \
     --dataset ../data/dataset.jsonl --meta ../data/dataset.meta.json --out ../results/run2_scaling
+python plot_scaling_figure.py            # Figure 2, from ../results/run2_scaling/detection.csv
 # credulity ablation and matched-helper control print their numbers to stdout
 # (the dataset argument is optional; both default to ../data/dataset.jsonl)
 python ablation_lying_helper.py          # Figure 3 / §4.4 numbers
