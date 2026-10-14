@@ -21,7 +21,8 @@ evidence of error exists in the environment, which the overseer is unable to que
    the benefit diminishes as the overseer's capability increases. Critique performance
    declines from 1.00 to 0.86 to 0.11. Consultancy and debate collapse a tier earlier:
    consultancy falls from 1.00 to 0.00 at the mid tier (0.00 at strong), and debate falls
-   from 0.99 to 0.03 (its results represent a lower bound — see the paper section 4.3).
+   from 0.99 to 0.03 (its results are likely an upper bound, because the honest helper
+   assigned the false side concedes rather than argues it — see the paper section 4.3).
 3. The results indicate that credulity, rather than verification, is the primary mechanism.
    A lying-helper ablation provides the overseer with a critique that incorrectly asserts a
    clean trajectory is flawed. The weak overseer subsequently identifies 100% of clean
