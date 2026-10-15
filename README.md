@@ -22,18 +22,20 @@ evidence of error exists in the environment, which the overseer is unable to que
    declines from 1.00 to 0.86 to 0.11. Consultancy and debate collapse a tier earlier:
    consultancy falls from 1.00 to 0.00 at the mid tier (0.00 at strong), and debate falls
    from 0.99 to 0.03 (its results are likely an upper bound, because the honest helper
-   assigned the false side concedes rather than argues it — see the paper section 4.3).
+   assigned the false side tends to concede rather than argue it — see the paper section 4.3).
 3. The results indicate that credulity, rather than verification, is the primary mechanism.
-   A lying-helper ablation provides the overseer with a critique that incorrectly asserts a
-   clean trajectory is flawed. The weak overseer subsequently identifies 100% of clean
-   trajectories as flawed (the false-positive rate decreases from 1.00 to 0.70 to 0.20 across
-   tiers). The same trust that enables effective assistance also renders the overseer
-   susceptible to deception, and both effects diminish as the overseer becomes more skeptical.
+   A false-report ablation gives the critic a falsified verification report, its only source
+   of ground truth, so the honest critic relays a claim that a clean trajectory is flawed.
+   The weak overseer subsequently identifies 100% of clean trajectories as flawed (the
+   false-positive rate decreases from 1.00 to 0.70 to 0.20 across tiers). The same trust
+   that enables effective assistance also renders the overseer susceptible to deception,
+   and both effects diminish as the overseer becomes more skeptical.
 4. A matched-capability control rules out source capability as the explanation: giving the
    strong overseer an equally strong helper leaves detection near the floor (0.18, versus the
    approximately 0.86 that capability parity predicts from the study's own grid), while a
-   stronger lying helper raises the false-positive rate from 0.20 to 0.35. Greater helper
-   capability buys persuasion, not verification (see the paper section 4.5).
+   stronger helper relaying the same false report raises the false-positive rate from 0.20
+   to 0.35. Greater helper capability buys persuasion, not verification (see the paper
+   section 4.5).
 
 When the overseer cannot verify the transmitted evidence, amplification and gullibility
 become the same phenomenon. Honest assistance cannot address a structural verification gap;
@@ -49,14 +51,16 @@ src/                 experiment harness (Python)
   schema.py env.py flaws.py generate.py     data layer: types, environment + verifier, flaw injectors, dataset builder
   models.py prompts.py protocols.py         model clients, prompts, the four oversight protocols
   eval.py run_experiment.py                 metrics (bootstrap CIs) + figures + CLI orchestrator
-  ablation_lying_helper.py                  the credulity control (prints Figure 3's numbers)
+  ablation_lying_helper.py                  the false-report credulity control (prints Figure 3's numbers)
   control_helper_tier.py                    the matched-helper control (prints §4.5's numbers)
   plot_scaling_figure.py                    Figure 2 (scaling_fabricated_observation.png) from run2_scaling/detection.csv
+  sample_transcripts.py                     small illustrative rerun that saves full model transcripts (Appendix B)
 data/                dataset.jsonl (560 labeled trajectories) + dataset.meta.json (env params)
 results/
   run1_weak_tier/    Run 1 — detection_by_class_weak.png (Figure 1) + CSVs
   run2_scaling/      Run 2 — tier sweep, all four protocols; scaling_fabricated_observation.png (Figure 2),
                      credulity.png (Figure 3), per-flaw/CSV detail
+  sample_transcripts/ illustrative rerun with full transcripts: transcripts.jsonl, transcripts.md (Appendix B)
 ```
 
 ## Method (one paragraph)
@@ -66,8 +70,8 @@ pure query and calculator tools, includes a verifier that maintains exact ground
 re-executing any step. A reference solver generates clean trajectories, while validated
 injectors produce six flaw types across 80 tasks (560 trajectories: one clean and one of each
 flaw per task). The overseer is presented with the task, a policy, and the trajectory with
-claimed observations, but never the gold answer or the verifier report. Helpers hold the
-ground truth. The study compares judge-alone, consultancy, critique, and debate across three
+claimed observations, but never the gold answer or the verifier report. Helpers receive the
+verifier report, which is their only access to ground truth. The study compares judge-alone, consultancy, critique, and debate across three
 overseer capability tiers, with helpers fixed at the mid tier. A matched-helper control
 (paper section 4.5) reruns the critique protocol at the strong tier with a strong helper on the
 fabricated-observation and clean subsets (n = 80 each).
@@ -101,6 +105,7 @@ python plot_scaling_figure.py            # Figure 2, from ../results/run2_scalin
 # (the dataset argument is optional; both default to ../data/dataset.jsonl)
 python ablation_lying_helper.py          # Figure 3 / §4.4 numbers
 python control_helper_tier.py            # §4.5 numbers
+python sample_transcripts.py             # Appendix B transcripts (illustrative rerun, 43 model calls)
 ```
 
 Overseer tiers use a weak / mid / strong model triple with helpers fixed at the mid model;
@@ -109,7 +114,8 @@ the exact model identifiers are set at the top of `src/models.py` (`JUDGE_MODELS
 
 ## Scope
 
-The study uses honest helpers with ground-truth access. The single controlled lie in the
-ablation isolates overseer credulity, not strategic deception. Deliberately excluded from
+The study uses honest helpers whose only access to ground truth is the verifier report. The
+single falsified report in the ablation simulates a corrupted verifier and isolates overseer
+credulity, not strategic deception. Deliberately excluded from
 scope are adversarial or untrusted helpers, real-agent rollouts, and richer environments.
 See the paper's limitations for further discussion.
