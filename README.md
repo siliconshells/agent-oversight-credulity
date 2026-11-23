@@ -22,9 +22,9 @@ evidence of error exists in the environment, which the overseer is unable to que
    declines from 1.00 to 0.86 to 0.11. Consultancy and debate collapse a tier earlier:
    consultancy falls from 1.00 to 0.00 at the mid tier (0.00 at strong), and debate falls
    from 0.99 to 0.03 (its results are likely an upper bound, because the honest helper
-   assigned the false side tends to concede rather than argue it — see the paper section 4.3).
+   assigned the false side tends to concede rather than argue it.
 3. The results indicate that credulity, rather than verification, is the primary mechanism.
-   A false-report ablation gives the critic a falsified verification report, its only source
+   A lying-verifier ablation gives the critic a falsified verification report, its only source
    of ground truth, so the honest critic relays a claim that a clean trajectory is flawed.
    The weak overseer subsequently identifies 100% of clean trajectories as flawed (the
    false-positive rate decreases from 1.00 to 0.70 to 0.20 across tiers). The same trust
@@ -34,8 +34,7 @@ evidence of error exists in the environment, which the overseer is unable to que
    strong overseer an equally strong helper leaves detection near the floor (0.18, versus the
    approximately 0.86 that capability parity predicts from the study's own grid), while a
    stronger helper relaying the same false report raises the false-positive rate from 0.20
-   to 0.35. Greater helper capability buys persuasion, not verification (see the paper
-   section 4.5).
+   to 0.35. Greater helper capability buys persuasion, not verification.
 
 When the overseer cannot verify the transmitted evidence, amplification and gullibility
 become the same phenomenon. Honest assistance cannot address a structural verification gap;
@@ -48,22 +47,21 @@ alongside any amplification metrics for weak overseers.
 
 ```
 src/                 experiment harness (Python)
-  schema.py env.py flaws.py generate.py     data layer: types, environment + verifier, flaw injectors, dataset builder
-  models.py prompts.py protocols.py         model clients, prompts, the four oversight protocols
-  eval.py run_experiment.py                 metrics (bootstrap CIs) + figures + CLI orchestrator
-  ablation_lying_helper.py                  the false-report credulity control (prints Figure 3's numbers)
-  control_helper_tier.py                    the matched-helper control (prints §4.5's numbers)
-  plot_scaling_figure.py                    Figure 2 (scaling_fabricated_observation.png) from run2_scaling/detection.csv
-  sample_transcripts.py                     small illustrative rerun that saves full model transcripts (Appendix B)
-data/                dataset.jsonl (560 labeled trajectories) + dataset.meta.json (env params)
+  schema.py env.py flaws.py generate.py     
+  models.py prompts.py protocols.py         
+  eval.py run_experiment.py                 
+  ablation_lying_helper.py                  
+  control_helper_tier.py                    
+  plot_scaling_figure.py                    
+  sample_transcripts.py                     
+data/                
 results/
-  run1_weak_tier/    Run 1 — detection_by_class_weak.png (Figure 1) + CSVs
-  run2_scaling/      Run 2 — tier sweep, all four protocols; scaling_fabricated_observation.png (Figure 2),
-                     credulity.png (Figure 3), per-flaw/CSV detail
-  sample_transcripts/ illustrative rerun with full transcripts: transcripts.jsonl, transcripts.md (Appendix B)
+  run1_weak_tier/    
+  run2_scaling/      
+  sample_transcripts/ 
 ```
 
-## Method (one paragraph)
+## Method
 
 A deterministic records-analyst environment, consisting of a seeded 240-record database with
 pure query and calculator tools, includes a verifier that maintains exact ground truth by
@@ -73,24 +71,21 @@ flaw per task). The overseer is presented with the task, a policy, and the traje
 claimed observations, but never the gold answer or the verifier report. Helpers receive the
 verifier report, which is their only access to ground truth. The study compares judge-alone, consultancy, critique, and debate across three
 overseer capability tiers, with helpers fixed at the mid tier. A matched-helper control
-(paper section 4.5) reruns the critique protocol at the strong tier with a strong helper on the
+ reruns the critique protocol at the strong tier with a strong helper on the
 fabricated-observation and clean subsets (n = 80 each).
 
 ## Reproduce
 
 ```bash
-pip install -r requirements.txt          # numpy / pandas / matplotlib; anthropic for real runs
+pip install -r requirements.txt          
 cd src
 
-# (re)build the benchmark (deterministic; set PYTHONHASHSEED=0 to reproduce exact injections)
 PYTHONHASHSEED=0 python generate.py --tasks 80 --out ../data/dataset.jsonl
 
-# offline pipeline check — no API key, no spend (mock judge; NOT a result)
 python run_experiment.py --mock --protocols judge_alone,consultancy,critique,debate \
     --judge-levels weak,mid,strong --n 560 \
     --dataset ../data/dataset.jsonl --meta ../data/dataset.meta.json --out ../results/_mock
 
-# real runs (set ANTHROPIC_API_KEY; --workers parallelizes; caching is resumable)
 export ANTHROPIC_API_KEY=...
 # Run 1 (Figure 1): weak tier, all four protocols
 python run_experiment.py --real --protocols judge_alone,consultancy,critique,debate \
@@ -100,12 +95,11 @@ python run_experiment.py --real --protocols judge_alone,consultancy,critique,deb
 python run_experiment.py --real --protocols judge_alone,consultancy,critique,debate \
     --judge-levels weak,mid,strong --n 560 --workers 12 \
     --dataset ../data/dataset.jsonl --meta ../data/dataset.meta.json --out ../results/run2_scaling
-python plot_scaling_figure.py            # Figure 2, from ../results/run2_scaling/detection.csv
-# credulity ablation and matched-helper control print their numbers to stdout
-# (the dataset argument is optional; both default to ../data/dataset.jsonl)
-python ablation_lying_helper.py          # Figure 3 / §4.4 numbers
-python control_helper_tier.py            # §4.5 numbers
-python sample_transcripts.py             # Appendix B transcripts (illustrative rerun, 43 model calls)
+python plot_scaling_figure.py            
+
+python ablation_lying_helper.py          
+python control_helper_tier.py            
+python sample_transcripts.py             
 ```
 
 Overseer tiers use a weak / mid / strong model triple with helpers fixed at the mid model;
@@ -115,7 +109,6 @@ the exact model identifiers are set at the top of `src/models.py` (`JUDGE_MODELS
 ## Scope
 
 The study uses honest helpers whose only access to ground truth is the verifier report. The
-single falsified report in the ablation simulates a corrupted verifier and isolates overseer
+single falsified report in the ablation simulates a lying verifier and isolates overseer
 credulity, not strategic deception. Deliberately excluded from
 scope are adversarial or untrusted helpers, real-agent rollouts, and richer environments.
-See the paper's limitations for further discussion.
