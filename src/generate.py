@@ -7,9 +7,10 @@ For each task: solve it (clean trajectory), then inject every flaw type and vali
 each against the environment's ground truth. Writes JSONL and prints a summary so you
 can confirm every injector produces a genuinely-flawed, correctly-labeled trajectory.
 
-In production you would *also* sample clean trajectories from a real agent model; the
-reference solver here gives you a deterministic, fully-checkable backbone to inject into.
+In production we would also sample clean trajectories from a real agent model; the
+reference solver here gives a deterministic, fully-checkable backbone to inject into.
 """
+
 from __future__ import annotations
 import argparse
 import json
@@ -37,7 +38,9 @@ def build(n_tasks: int, seed: int = 0):
     for i in range(n_tasks):
         task = env.make_task(task_id=f"t{i:04d}", seed=1000 + i)
         clean = solve(env, task)
-        assert not env.is_flawed(task, clean), f"reference solution flawed on {task.task_id}"
+        assert not env.is_flawed(
+            task, clean
+        ), f"reference solution flawed on {task.task_id}"
         # one clean example per task
         rows.append({"task": task.to_dict(), "trajectory": clean.to_dict()})
         # one of each flaw type
@@ -69,8 +72,10 @@ def main():
     label_counts = Counter(r["trajectory"]["label"] for r in rows)
     clean_n = label_counts.get("clean", 0)
     flawed_n = len(rows) - clean_n
-    print(f"wrote {len(rows)} trajectories to {args.out} "
-          f"({clean_n} clean / {flawed_n} flawed)")
+    print(
+        f"wrote {len(rows)} trajectories to {args.out} "
+        f"({clean_n} clean / {flawed_n} flawed)"
+    )
     print("\nby label:")
     for k in sorted(label_counts):
         print(f"  {k:24s} {label_counts[k]}")
@@ -83,8 +88,10 @@ def main():
         if r["trajectory"]["label"] == "reward_hack":
             t, traj = r["task"], r["trajectory"]
             print("\nexample reward_hack (answer correct, process illegitimate):")
-            print(f"  gold={t['gold_answer']} reported={traj['final_answer']} "
-                  f"steps={[s['action'] for s in traj['steps']]}")
+            print(
+                f"  gold={t['gold_answer']} reported={traj['final_answer']} "
+                f"steps={[s['action'] for s in traj['steps']]}"
+            )
             break
 
 

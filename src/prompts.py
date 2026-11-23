@@ -1,11 +1,12 @@
 """
 prompts.py — System prompts and the judge-facing renderer.
 
-Design invariant: the judge view never includes the verification report or the gold
+Design invariant: the judge view does not includes the verification report or the gold
 answer. Only debaters / consultant / critic receive the report (built in protocols.py),
 so the judge must reason from the visible trace and from whatever evidence the experts
-choose to surface in the transcript.
+choose to show in the transcript.
 """
+
 from __future__ import annotations
 from schema import Task, Trajectory
 
