@@ -1,15 +1,15 @@
 """
-models.py — Model clients satisfying the protocols.ModelClient interface.
+models.py - Model clients satisfying the protocols.ModelClient interface.
 
   * AnthropicClient — real provider client (lazy-imports the `anthropic` SDK; reads
     ANTHROPIC_API_KEY). Use this for actual results.
-  * MockClient — offline, deterministic stand-in so the WHOLE pipeline (protocols,
-    parsing, metrics, plots) can be run and verified without an API key or spend.
+  * MockClient — offline, deterministic stand-in so the whole pipeline (protocols,
+    parsing, metrics, plots) can be run and verified without an API key.
 
-The mock is NOT a model. It reproduces just enough behavior to exercise every code path
+The mock is not a model. It reproduces just enough behavior to exercise every code path
 and yield non-degenerate metrics: as a judge it can only catch policy violations that are
 literally visible in the action log, and it trusts cited ground-truth evidence when a
-debate/critique transcript surfaces it.
+debate/critique transcript brings it up.
 """
 
 from __future__ import annotations
