@@ -46,7 +46,7 @@ alongside any amplification metrics for weak overseers.
 ## Repository layout
 
 ```
-src/                 experiment harness (Python)
+src/                 
   schema.py env.py flaws.py generate.py     
   models.py prompts.py protocols.py         
   eval.py run_experiment.py                 
@@ -68,13 +68,13 @@ pure query and calculator tools, includes a verifier that maintains exact ground
 re-executing any step. A reference solver generates clean trajectories, while validated
 injectors produce six flaw types across 80 tasks (560 trajectories: one clean and one of each
 flaw per task). The overseer is presented with the task, a policy, and the trajectory with
-claimed observations, but never the gold answer or the verifier report. Helpers receive the
+claimed observations, but not the gold answer or the verifier report. Helpers receive the
 verifier report, which is their only access to ground truth. The study compares judge-alone, consultancy, critique, and debate across three
 overseer capability tiers, with helpers fixed at the mid tier. A matched-helper control
  reruns the critique protocol at the strong tier with a strong helper on the
-fabricated-observation and clean subsets (n = 80 each).
+fabricated-observation and clean subsets (80 each).
 
-## Reproduce
+## To reproduce
 
 ```bash
 pip install -r requirements.txt          
@@ -87,11 +87,9 @@ python run_experiment.py --mock --protocols judge_alone,consultancy,critique,deb
     --dataset ../data/dataset.jsonl --meta ../data/dataset.meta.json --out ../results/_mock
 
 export ANTHROPIC_API_KEY=...
-# Run 1 (Figure 1): weak tier, all four protocols
 python run_experiment.py --real --protocols judge_alone,consultancy,critique,debate \
     --judge-levels weak --n 560 --workers 12 \
     --dataset ../data/dataset.jsonl --meta ../data/dataset.meta.json --out ../results/run1_weak_tier
-# Run 2 (Figures 2–3): tier sweep
 python run_experiment.py --real --protocols judge_alone,consultancy,critique,debate \
     --judge-levels weak,mid,strong --n 560 --workers 12 \
     --dataset ../data/dataset.jsonl --meta ../data/dataset.meta.json --out ../results/run2_scaling
